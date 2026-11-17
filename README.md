@@ -1,86 +1,104 @@
 # Task Manager SPA
-## Descripción
-Aplicación web SPA para gestión de tareas. Permite registrarse, iniciar sesión, crear tareas, verlas, marcarlas como completadas y eliminarlas.
-La aplicación usa Firebase Authentication para autenticación y Cloud Firestore para guardar las tareas de cada usuario.
-## URL de producción
-https://task-manager-spa-phi.vercel.app
-## Repositorio
-https://github.com/DalilaMiglio/task-manager-spa
+
+Aplicación web para gestionar tareas personales, desarrollada con React, TypeScript y Firebase.
+
+**[Abrir demo](https://task-manager-spa-phi.vercel.app)** · **[Ver código](https://github.com/DalilaMiglio/task-manager-spa)**
+
+## Qué permite hacer
+
+- Registrarse e iniciar sesión con Firebase Authentication.
+- Acceder a las vistas privadas mediante React Router.
+- Crear tareas con título y descripción.
+- Consultar las tareas asociadas al usuario autenticado.
+- Marcar tareas como completadas o pendientes y eliminarlas.
+- Guardar los datos en Cloud Firestore.
+
+## Mi aporte
+
+Proyecto individual de formación en desarrollo web. Implementé la interfaz en React y TypeScript, la autenticación, las rutas protegidas y la capa de servicios para las operaciones de tareas en Firestore.
+
 ## Tecnologías
-- React
-- TypeScript
-- Vite
-- Firebase Authentication
-- Cloud Firestore
-- React Router
-- Vercel
-- GitHub
-## Organización del código
-El proyecto está organizado por capas:
-```txt
-src/
-├── components
-├── pages
-├── services
-├── hooks
-├── routes
-├── types
-├── features
-├── utils
-Decisiones arquitectónicas
-Se separó el código por responsabilidades para que sea más mantenible:
-* components: componentes reutilizables.
-* pages: vistas principales.
-* services: conexión con Firebase y Firestore.
-* hooks: lógica reutilizable de autenticación.
-* routes: rutas privadas.
-* types: tipos de TypeScript.
-Firestore guarda cada tarea con un userId, por lo que cada usuario solo puede ver sus propias tareas.
-Instalación
-npm install
-npm run dev
-npm run build
-Variables de entorno
-Crear un archivo .env con:
+
+React, TypeScript, Vite, React Router, Firebase Authentication, Cloud Firestore y Vercel.
+
+## Ejecutar en local
+
+Requiere Node.js y npm compatibles con las versiones de Vite y TypeScript declaradas en `package.json`.
+
+```bash
+git clone https://github.com/DalilaMiglio/task-manager-spa.git
+cd task-manager-spa
+npm ci
+cp .env.example .env
+```
+
+Completar en `.env` la configuración de una aplicación web de Firebase:
+
+```env
 VITE_FIREBASE_API_KEY=
 VITE_FIREBASE_AUTH_DOMAIN=
 VITE_FIREBASE_PROJECT_ID=
 VITE_FIREBASE_STORAGE_BUCKET=
 VITE_FIREBASE_MESSAGING_SENDER_ID=
 VITE_FIREBASE_APP_ID=
-AWS_ACCESS_KEY_ID=
-AWS_SECRET_ACCESS_KEY=
-AWS_REGION=
-SES_FROM_EMAIL=
-Flujo de envío de emails
-El proyecto fue preparado para enviar un resumen de tareas mediante una Vercel Function y AWS SES.
-Flujo esperado:
-1. El usuario solicita enviar el resumen.
-2. El frontend llama a una función serverless de Vercel.
-3. La función usa AWS SES.
-4. AWS SES envía el email.
-5. Las credenciales se manejan como variables de entorno y no se exponen en el frontend.
-Estado de AWS SES
-La integración con AWS SES quedó planteada a nivel de arquitectura y variables de entorno.
-Durante la configuración, la cuenta AWS quedó suspendida por un problema externo de autenticación/facturación, por lo que no fue posible validar el envío real de emails en producción.
-Deploy
-La aplicación está desplegada en Vercel:
-https://task-manager-spa-phi.vercel.app
-Uso de IA
-La IA fue utilizada como apoyo durante el desarrollo para:
-* Organizar la estructura del proyecto.
-* Corregir errores de TypeScript.
-* Entender errores de Firebase y Vercel.
-* Mejorar el README.
-* Guiar el proceso de deploy.
-* Aplicar buenas prácticas de separación por capas.
-Fue más efectiva al interpretar errores, explicar pasos técnicos y ayudar a mantener una estructura ordenada.
-Buenas prácticas aplicadas
-* Uso de TypeScript.
-* Separación por capas.
-* Variables de entorno.
-* No subir .env al repositorio.
-* Rutas privadas.
-* Persistencia en Firestore.
-* Deploy en Vercel.
-* Commits descriptivos.
+```
+
+Habilitar Authentication y crear una base de datos de Cloud Firestore en el proyecto Firebase. Si se utiliza Google como proveedor de acceso, habilitarlo y configurar los dominios autorizados.
+
+```bash
+npm run dev
+```
+
+Abrir la dirección local que indique Vite.
+
+## Organización del código
+
+```text
+src/
+├── components/   # Formulario y lista de tareas
+├── hooks/        # Autenticación
+├── pages/        # Registro, acceso y gestión de tareas
+├── routes/       # Protección de rutas
+├── services/     # Firebase y operaciones de datos
+├── types/        # Tipos de TypeScript
+├── App.tsx
+└── main.tsx
+```
+
+La capa `services/taskService.ts` centraliza las operaciones de creación, consulta, actualización y eliminación. Las consultas filtran por `userId`.
+
+El filtrado de la interfaz no sustituye las reglas de seguridad de Firestore. En cada entorno deben configurarse reglas que validen la identidad del usuario y la propiedad de los documentos.
+
+## Comprobaciones disponibles
+
+```bash
+npm run lint
+npm run build
+npm run preview
+```
+
+- `lint`: revisión estática con ESLint.
+- `build`: comprobación de TypeScript y compilación con Vite.
+- `preview`: vista local del resultado compilado.
+
+Para una comprobación funcional manual: registrar un usuario, iniciar sesión, crear una tarea, cambiar su estado, eliminarla y verificar la persistencia al volver a ingresar.
+
+## Estado y límites
+
+El núcleo implementado es la gestión de tareas con autenticación y persistencia.
+
+**Correo con AWS SES:** se diseñó como una ampliación futura. La configuración de ejemplo incluye variables AWS, pero este repositorio no contiene una función de envío de correo desplegable. El envío en producción no fue validado. Esas variables no son necesarias para ejecutar el CRUD y no deben exponerse al frontend mediante el prefijo `VITE_`.
+
+**Pruebas automatizadas:** las dependencias de Vitest están declaradas, pero el archivo actual bajo `tests/` no constituye una suite de pruebas ejecutable y no hay un script `test` en `package.json`. No se declara cobertura de pruebas.
+
+## Aprendizajes
+
+- Autenticación y navegación privada en una SPA.
+- Modelado de tareas por usuario en Firestore.
+- Separación entre componentes, páginas y servicios.
+- Configuración mediante variables de entorno y despliegue en Vercel.
+
+## Uso de IA
+
+Utilicé IA como apoyo para comprender errores, organizar el proyecto y revisar documentación. El código y sus decisiones deben poder explicarse y comprobarse de forma independiente.
+
